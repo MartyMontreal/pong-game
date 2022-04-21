@@ -1,0 +1,169 @@
+<body>
+    
+  <h3>Pong Game - version I</h3>
+
+To do: 
+<li>add listeners specific keys to solicit paddle movements</li> 
+<li>allow paddle to move within constrained area at left and right of screen </li> 
+<li>add collition detection to detect paddle hitting ball</li> 
+<li>add point counter</li> 
+<li>award points for each deflection</li> 
+<li>add win/lose game logic</li> 
+
+<br/><br/>Coordinates:<br/>
+<p id="coordinate_values"></p>
+<div id="container" >
+<p id="animated_circle"></p>
+<div id = "pleft"></div>
+<div id = "pright"></div>
+</div>
+<br>
+<button id="btnStop">Stop ball</button>
+<button id="btnStart">Start ball</button>
+
+<br><br>      
+</body>
+
+<style>
+#container{
+ border: 1px solid gray;
+ background-color: rgb(236, 225, 225);
+ height: 600px;
+ width: 600px;
+ margin: auto;
+}
+#animated_circle{
+ height: 35px;
+ width: 35px;
+ margin:10px;
+ background-color: rgb(103, 74, 184);
+ border-radius: 50%;
+}
+#coordinate_values{
+ border: 1px solid gray;
+ background-color: rgb(236, 225, 225);
+ padding: 10px;
+ width: 50px;
+}
+
+#pleft {
+height: 100px;
+width: 30px;
+position: absolute;
+background: red;
+margin-left: 10px;
+}
+
+#pright {
+height: 100px;
+width: 30px;
+position: absolute;
+background: blue;
+margin-left: 560px;
+}
+</style>
+
+<script>
+
+    let coordinate_values = document.getElementById('coordinate_values');  
+    let animated_circle = document.getElementById('animated_circle');
+    let xpos = 0; // new vertical position
+    let ypos = 0; // new horizontal position
+    let multiplierX = 1  // multiplier controls speed
+    let multiplierY = 1  // multiplier controls speed
+    let animationRequest = null;
+
+    const myContainer = document.querySelector('#container');
+    const screen_width = myContainer.offsetWidth - 50;
+    const screen_height = myContainer.offsetHeight - 50;
+    const rightPaddle = document.getElementById('pright');
+    const leftPaddle = document.getElementById('pleft');
+
+    
+    var btnStop = document.getElementById("btnStop");
+    btnStop.addEventListener("click", ballStop);
+
+    var btnStart = document.getElementById("btnStart");
+    btnStart.addEventListener("click", ballStart);
+
+    const arrowKeys = document.addEventListener('keydown', function(e) {
+switch (e.keyCode) {
+    case 38:
+    checkKeys(e)
+        break;
+    case 40:
+       checkKeys(e)
+        break;
+}
+});  
+//checking which keys pressed
+
+    function checkKeys(e){
+      e = e || window.event
+      
+      if (e.keyCode == '38'){
+        leftPaddle.style.transform = 'translateY(50px)'
+      } else if (e.keyCode == '40'){
+        //moves paddle down     
+      }
+    }
+
+    function ballStop() {
+        window.cancelAnimationFrame(animationRequest);
+    }
+
+    function ballStart() {
+        animationRequest = window.requestAnimationFrame(ballMove);
+    }
+
+    function ballMove() {
+
+        // if on screen - left right
+        if (xpos < screen_width && xpos > 1) { // position within range - no change
+
+        }
+        // ball too far right: then move left (-1)
+        else if (xpos >= screen_width) { // position < width            
+            multiplierX = -1 * Math.random(.5);
+        }
+        // too far left: then move right (+1)
+        else if (xpos < 1) { // position < width            
+            multiplierX = 1 * Math.random(.5);
+        }
+
+        xpos = xpos + (10 * multiplierX); // horizonatal position
+      //working on ypos
+      if (ypos < screen_height && ypos > 1) { // position within range - no change
+
+        }
+        // ball too far up: then move down (-1)
+        else if (ypos >= screen_height) { // position < height            
+            multiplierY = -1 * Math.random(.5);
+        }
+        // too far down: then move up (+1)
+        else if (ypos < 1) { // position < height            
+            multiplierY = 1 * Math.random(.5);
+        }
+
+        ypos = ypos + (10 * multiplierY); // vertical position
+
+        // put x, y values to 
+        document.getElementById("coordinate_values").innerHTML = 
+          "x=" + parseInt(xpos) + "<br>y=" + parseInt(ypos); 
+
+        // translateX() function is used to move elements in a two-dimensional space 
+        // along the x-axis (horizontally).</p>
+
+        // The translate() CSS function repositions an element in the horizontal 
+        // and/or vertical directions.  
+        animated_circle.style.transform = `translate(${xpos}px , ${ypos}px)`;
+        
+ 
+        // initial call   
+        animationRequest = window.requestAnimationFrame(ballMove);
+    }
+
+    // recursive call
+    animationRequest = window.requestAnimationFrame(ballMove);
+
+  </script>
